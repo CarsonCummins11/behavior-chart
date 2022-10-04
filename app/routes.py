@@ -12,12 +12,14 @@ def edit():
     if request.method == 'GET':
         return render_template('edit.html')
     else:
-        for email in  ['scutler3@u.rochester.edu','kbenning@u.rochester.edu','sturn20@u.rochester.edu','ccummins@u.rochester.edu']:
-            yag = yagmail.SMTP('hello@joinaura.us','AURAtest!@#')
-            yag.send(to=email, subject="Someone's color changed", contents=f"{request.form['name']} is now on {request.form['color']}")
 
         if db['people'].find_one({'name':request.form['name']}) == None:
             db['people'].insert_one({'name':request.form['name'],'color':request.form['color']})
         else:
             db['people'].update_one({'name':request.form['name']},{'$set':{'color':request.form['color']}})
+
+        for email in  ['scutler3@u.rochester.edu','kbenning@u.rochester.edu','sturn20@u.rochester.edu','ccummins@u.rochester.edu']:
+            yag = yagmail.SMTP('hello@joinaura.us','AURAtest!@#')
+            yag.send(to=email, subject="Someone's color changed", contents=f"{request.form['name']} is now on {request.form['color']}")
+        
         return redirect('/')
